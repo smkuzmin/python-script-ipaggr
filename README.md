@@ -1,3 +1,4 @@
+```
 IPAggr v1.12 - IPv4 Aggregator
 
 Merges overlapping and adjacent IPv4 addresses and subnets into the minimum number
@@ -25,3 +26,4 @@ USAGE:
   cat file.lst | ipaggr
   ipaggr < file.lst
   ipaggr < file.lst > output.lst
+```
