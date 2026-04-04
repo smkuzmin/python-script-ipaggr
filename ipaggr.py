@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 r"""
-IPAggr v1.12 - IPv4 Aggregator
+IPAggr v1.14 - IPv4 Aggregator
 
 Merges overlapping and adjacent IPv4 addresses and subnets into the minimum number
 of networks, preserving and merging comments from the original list.
@@ -98,15 +98,11 @@ def main():
         else:
             print(f"{ip_str:<18} #")
 
+# Точка входа
 if __name__ == '__main__':
-    # Показываем справку при вызове с -h или --help
-    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help'):
-        print(__doc__)
-        sys.exit(0)
-
-    # Показываем справку, если запущен без перенаправления ввода
-    if sys.stdin.isatty():
-        print(__doc__)
+    # Показываем справку при вызове с -h или --help, или если запущен без перенаправления ввода
+    if sys.stdin.isatty() or '-h' in sys.argv or '--help' in sys.argv:
+        print(__doc__, file=sys.stderr)
         sys.exit(0)
 
     # Обрабатываем прерывание без вывода ошибки
