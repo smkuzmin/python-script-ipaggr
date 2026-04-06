@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 r"""
-IPAggr v1.14 - IPv4 Aggregator
+IPAggr v1.15 - IPv4 Aggregator
 
 Merges overlapping and adjacent IPv4 addresses and subnets into the minimum number
 of networks, preserving and merging comments from the original list.
@@ -16,18 +16,17 @@ FEATURES:
   - Fixed-width output format: "%-18s # %s"
 
 INPUT FORMAT:
-  192.168.1.1                # Single IP address
-  192.168.1.0/24             # Network with CIDR prefix
-  192.168.1.0/255.255.255.0  # Network with subnet mask
+  192.168.1.1                  Single IP address
+  192.168.1.0/24               Network with CIDR prefix
+  192.168.1.0/255.255.255.0    Network with subnet mask
 
 OUTPUT FORMAT:
   192.168.1.0/24     # comment1, comment2, ...
   192.168.1.1        # comment
 
 USAGE:
-  cat file.lst | ipaggr
-  ipaggr < file.lst
-  ipaggr < file.lst > output.lst
+  cat infile.lst | ipaggr
+  ipaggr < infile.lst > outfile.lst
 """
 
 import sys
