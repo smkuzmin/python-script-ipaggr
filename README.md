@@ -1,5 +1,5 @@
 ```
-IPAggr v1.15 - IPv4 Aggregator
+IPAggr v1.16 - IPv4 Aggregator
 
 Merges overlapping and adjacent IPv4 addresses and subnets into the minimum number
 of networks, preserving and merging comments from the original list.
