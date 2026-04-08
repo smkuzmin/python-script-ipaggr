@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 r"""
-IPAggr v1.15 - IPv4 Aggregator
+IPAggr v1.11 - IPv4 Aggregator
 
 Merges overlapping and adjacent IPv4 addresses and subnets into the minimum number
 of networks, preserving and merging comments from the original list.
@@ -82,6 +82,9 @@ def main():
 
         # Фильтруем пустые комментарии и сортируем для консистентного вывода
         comments = sorted(c for c in comments if c)
+
+        # Удаляем повторяющиеся комментарии после сортировки
+        comments = list(dict.fromkeys(comments))
 
         # Формируем строку IP/сети
         if agg_net.prefixlen == 32:
