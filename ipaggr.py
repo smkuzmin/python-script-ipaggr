@@ -34,18 +34,18 @@ import ipaddress
 from collections import defaultdict
 
 def parse_line(line):
-    # Разбираем строку с опциональным комментарием. Возвращаем (сеть, комментарий) или (None, None)
+    # Разбираем строку с опциональным комментарием. Возвращаем (сеть, список_комментариев) или (None, [])
     line = line.strip()
     if not line or line.startswith('#'):
-        return None, None
+        return None, []
 
     # Разделяем по '#' для отделения IP/CIDR от комментария
     parts = line.split('#', 1)
     ip_part = parts[0].strip()
-    comment = parts[1].strip() if len(parts) > 1 else ''
+    comment_str = parts[1].strip() if len(parts) > 1 else ''
 
     if not ip_part:
-        return None, None
+        return None, []
 
     # Обрабатываем одиночный IP как /32
     if '/' not in ip_part:
@@ -53,18 +53,20 @@ def parse_line(line):
 
     try:
         network = ipaddress.ip_network(ip_part, strict=False)
-        return network, comment
+        # Разбиваем строку комментариев по запятым, убираем пробелы и пустые элементы
+        comments = [c.strip() for c in comment_str.split(',') if c.strip()]
+        return network, comments
     except ValueError:
-        return None, None
+        return None, []
 
 def main():
     # Храним сети с их комментариями: {сеть: [список комментариев]}
     net_comments = defaultdict(list)
 
     for line in sys.stdin:
-        network, comment = parse_line(line)
+        network, comments = parse_line(line)
         if network:
-            net_comments[network].append(comment)
+            net_comments[network].extend(comments)
 
     if not net_comments:
         return
