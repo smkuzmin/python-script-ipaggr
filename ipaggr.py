@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 
 r"""
-IPAggr v1.16 - IPv4 Aggregator
+IPAggr v1.17 - IPv4 Aggregator
 
 Merges overlapping and adjacent IPv4 addresses and subnets into the minimum number
 of networks, preserving and merging comments from the original list.
 
 FEATURES:
-  - Skips invalid lines without errors (empty lines, comments, text)
-  - Automatically processes single IP addresses as /32
-  - Outputs single addresses without /32 prefix
-  - Automatic ascending sorting
   - Supports both CIDR prefixes and subnet masks (e.g., 192.168.1.0/24 or 192.168.1.0/255.255.255.0)
+  - Supports aggregation with rounding to the specified CIDR prefix
+  - Silently skips invalid lines (empty lines, comments, non-IP text)
   - Preserves and merges comments from input lines
-  - Fixed-width output format: "%-18s # %s"
+  - Automatically treats individual IP addresses as /32 networks
+  - Omits the /32 prefix for individual addresses in the output
+  - Automatically sorts output in ascending numerical order
+  - Uses fixed-width formatting: "%-18s # %s"
 
 INPUT FORMAT:
   192.168.1.1                  Single IP address
@@ -25,8 +26,11 @@ OUTPUT FORMAT:
   192.168.1.1        # comment
 
 USAGE:
-  cat infile.lst | ipaggr
-  ipaggr < infile.lst > outfile.lst
+  cat infile.lst | ipaggr OPTIONS
+  ipaggr OPTIONS < infile.lst > outfile.lst
+
+OPTIONS:
+  -p, --prefix=CIDR_PREFIX    Aggregation with rounding to the specified CIDR prefix
 """
 
 import sys
@@ -60,12 +64,54 @@ def parse_line(line):
         return None, []
 
 def main():
+    # Парсинг опции -p / --prefix
+    target_prefix = None
+    args = sys.argv[1:]
+    i = 0
+    while i < len(args):
+        arg = args[i]
+        if arg == '-p':
+            if i + 1 < len(args):
+                i += 1
+                val = args[i]
+                try:
+                    target_prefix = int(val)
+                    if not (0 <= target_prefix <= 32): raise ValueError
+                except ValueError:
+                    print(f"Error: Invalid prefix: {val}. Must be 0-32.", file=sys.stderr)
+                    sys.exit(1)
+            else:
+                print("Error: Option -p requires a value.", file=sys.stderr)
+                sys.exit(1)
+        elif arg.startswith('--prefix='):
+            val = arg.split('=', 1)[1]
+            if val:
+                try:
+                    target_prefix = int(val)
+                    if not (0 <= target_prefix <= 32): raise ValueError
+                except ValueError:
+                    print(f"Error: Invalid prefix: {val}. Must be 0-32.", file=sys.stderr)
+                    sys.exit(1)
+            else:
+                print("Error: Option --prefix requires a value.", file=sys.stderr)
+                sys.exit(1)
+        elif arg in ('-h', '--help'):
+            print(__doc__, file=sys.stderr)
+            sys.exit(0)
+        else:
+            print(f"Error: Invalid option: {arg}", file=sys.stderr)
+            sys.exit(1)
+        i += 1
+
     # Храним сети с их комментариями: {сеть: [список комментариев]}
     net_comments = defaultdict(list)
 
     for line in sys.stdin:
         network, comments = parse_line(line)
         if network:
+            # Округляем входящую сеть до заданного префикса, если он строже
+            if target_prefix is not None and network.prefixlen > target_prefix:
+                network = network.supernet(new_prefix=target_prefix)
             net_comments[network].extend(comments)
 
     if not net_comments:
