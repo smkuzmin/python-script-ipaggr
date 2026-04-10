@@ -1,17 +1,17 @@
 ```
-IPAggr v1.17 - IPv4 Aggregator
+IPAggr v1.18 - IPv4 Aggregator
 
 Merges overlapping and adjacent IPv4 addresses and subnets into the minimum number
 of networks, preserving and merging comments from the original list.
 
 FEATURES:
+  - Rounds input networks to the specified CIDR prefix before aggregation
   - Supports both CIDR prefixes and subnet masks (e.g., 192.168.1.0/24 or 192.168.1.0/255.255.255.0)
-  - Supports aggregation with rounding to the specified CIDR prefix
-  - Silently skips invalid lines (empty lines, comments, non-IP text)
+  - Skips invalid lines without errors (empty lines, comments, text)
   - Preserves and merges comments from input lines
   - Automatically treats individual IP addresses as /32 networks
-  - Omits the /32 prefix for individual addresses in the output
-  - Automatically sorts output in ascending numerical order
+  - Outputs single addresses without /32 prefix
+  - Automatically sorts output in ascending order
   - Uses fixed-width formatting: "%-18s # %s"
 
 INPUT FORMAT:
