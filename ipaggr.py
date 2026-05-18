@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 r"""
-IPAggr v1.18 - IPv4 Aggregator
+IPAggr v1.19 - IPv4 Aggregator
 
 Merges overlapping and adjacent IPv4 addresses and subnets into the minimum number
 of networks, preserving and merging comments from the original list.
@@ -76,9 +76,9 @@ def main():
                 val = args[i]
                 try:
                     target_prefix = int(val)
-                    if not (0 <= target_prefix <= 32): raise ValueError
+                    if not (1 <= target_prefix <= 32): raise ValueError
                 except ValueError:
-                    print(f"Error: Invalid prefix: {val}. Must be 0-32.", file=sys.stderr)
+                    print(f"Error: Invalid prefix: {val}. Must be 1-32.", file=sys.stderr)
                     sys.exit(1)
             else:
                 print("Error: Option -p requires a value.", file=sys.stderr)
@@ -88,9 +88,9 @@ def main():
             if val:
                 try:
                     target_prefix = int(val)
-                    if not (0 <= target_prefix <= 32): raise ValueError
+                    if not (1 <= target_prefix <= 32): raise ValueError
                 except ValueError:
-                    print(f"Error: Invalid prefix: {val}. Must be 0-32.", file=sys.stderr)
+                    print(f"Error: Invalid prefix: {val}. Must be 1-32.", file=sys.stderr)
                     sys.exit(1)
             else:
                 print("Error: Option --prefix requires a value.", file=sys.stderr)
