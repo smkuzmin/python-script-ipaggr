@@ -26,7 +26,7 @@ OUTPUT FORMAT:
   192.168.1.1        # comment
 
 USAGE:
-  cat infile.lst | ipaggr OPTIONS
+  cat infile.lst | ipaggr [OPTIONS]
   ipaggr OPTIONS < infile.lst > outfile.lst
 
 OPTIONS:
